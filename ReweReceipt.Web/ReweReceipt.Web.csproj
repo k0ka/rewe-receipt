@@ -5,16 +5,78 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <SpaRoot>Client\</SpaRoot>
+        <SpaProxyServerUrl>http://localhost:5001</SpaProxyServerUrl>
+        <SpaProxyLaunchCommand>pnpm dev</SpaProxyLaunchCommand>
+        <SpaProxyLaunchCommand Condition="$([MSBuild]::IsOsPlatform('Windows'))">cmd.exe /s /c $(SpaProxyLaunchCommand)</SpaProxyLaunchCommand>
+        <SpaProxyLaunchCommand Condition="$([MSBuild]::IsOSUnixLike())">sh -c '$(SpaProxyLaunchCommand)'</SpaProxyLaunchCommand>
+        <OpenApiDocumentsDirectory>Client/src/api</OpenApiDocumentsDirectory>
+        <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Autofac" Version="9.0.0"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.11.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+        <None Remove="data/**"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- Don't publish the SPA source files, but do show them in the project files list -->
+        <Content Remove="$(SpaRoot)**"/>
+        <None Remove="$(SpaRoot)**"/>
+        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+    </ItemGroup>
+
+    <Target Name="EnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+        <!-- Ensure Node.js is installed -->
+        <Exec Command="pnpm --version" ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+        </Exec>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js and pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation, and then restart your command prompt or IDE."/>
+        <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..."/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
+    </Target>
+
+    <Target Name="GenerateOpenAPIJavaScript" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm orval"/>
+    </Target>
+
+    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+        <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm build"/>
+
+        <!-- Include the newly-built files in the publish output -->
+        <ItemGroup>
+            <DistFiles Include="$(SpaRoot)dist\**"/>
+            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+                <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            </ResolvedFileToPublish>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="CreateFolder" AfterTargets="Publish">
+        <MakeDir Directories="$(PublishDir)data" Condition="!Exists('$(PublishDir)data')" />
+    </Target>
 </Project>

@@ -1,6 +1,0 @@
-@ReweReceipt.Web_HostAddress = http://localhost:5153
-
-GET {{ReweReceipt.Web_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
