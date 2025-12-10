@@ -36,7 +36,8 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
-          context: ReweReceipt.Web/
+          context: .
+          file: ./ReweReceipt.Web/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
