@@ -46,10 +46,6 @@
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
     </ItemGroup>
     
-    <Target Name="CreateDataFolder" BeforeTargets="Build">
-        <MakeDir Directories="$(PublishDir)data" Condition="!Exists('$(PublishDir)data')" />
-    </Target>
-    
     <Target Name="EnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
         <!-- Ensure Node.js is installed -->
         <Exec Command="pnpm --version" ContinueOnError="true">
@@ -79,4 +75,9 @@
             </ResolvedFileToPublish>
         </ItemGroup>
     </Target>
+
+    <Target Name="CreateDataFolder" AfterTargets="Publish">
+        <MakeDir Directories="$(PublishDir)data" Condition="!Exists('$(PublishDir)data')" />
+    </Target>
+
 </Project>
