@@ -10,8 +10,8 @@
         <SpaProxyLaunchCommand>pnpm dev</SpaProxyLaunchCommand>
         <SpaProxyLaunchCommand Condition="$([MSBuild]::IsOsPlatform('Windows'))">cmd.exe /s /c $(SpaProxyLaunchCommand)</SpaProxyLaunchCommand>
         <SpaProxyLaunchCommand Condition="$([MSBuild]::IsOSUnixLike())">sh -c '$(SpaProxyLaunchCommand)'</SpaProxyLaunchCommand>
-        <OpenApiDocumentsDirectory>Client/src/api</OpenApiDocumentsDirectory>
         <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+        <OpenApiDocumentsDirectory>Client/src/api</OpenApiDocumentsDirectory>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,6 +24,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="10.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1"/>
         <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0">
             <PrivateAssets>all</PrivateAssets>

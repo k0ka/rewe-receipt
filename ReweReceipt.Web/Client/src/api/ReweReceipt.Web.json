@@ -5,10 +5,10 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/v1/Post": {
+    "/api/v1/Fetch": {
       "get": {
         "tags": [
-          "Post"
+          "Fetch"
         ],
         "responses": {
           "200": {
@@ -16,26 +16,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Post"
-                  }
+                  "$ref": "#/components/schemas/GetResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Post"
-                  }
+                  "$ref": "#/components/schemas/GetResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Post"
-                  }
+                  "$ref": "#/components/schemas/GetResponse"
                 }
               }
             }
@@ -44,61 +35,14 @@
       },
       "post": {
         "tags": [
-          "Post"
+          "Fetch"
         ],
         "parameters": [
           {
-            "name": "title",
+            "name": "cookie",
             "in": "query",
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "content",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/Post"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Post"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Post"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/Post/{id}": {
-      "delete": {
-        "tags": [
-          "Post"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
             }
           }
         ],
@@ -108,15 +52,146 @@
           }
         }
       }
+    },
+    "/api/v1/Receipt": {
+      "get": {
+        "tags": [
+          "Receipt"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReceiptBrief"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReceiptBrief"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReceiptBrief"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Post": {
+      "GetResponse": {
+        "required": [
+          "isFetching",
+          "receiptsCount",
+          "articlesCount",
+          "lastError"
+        ],
+        "type": "object",
+        "properties": {
+          "isFetching": {
+            "type": "boolean"
+          },
+          "receiptsCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "articlesCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lastError": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "Market": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "zipCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          }
+        }
+      },
+      "ReceiptBrief": {
         "required": [
           "id",
-          "title",
-          "content"
+          "market",
+          "date",
+          "total"
         ],
         "type": "object",
         "properties": {
@@ -124,11 +199,20 @@
             "type": "string",
             "format": "uuid"
           },
-          "title": {
-            "type": "string"
+          "market": {
+            "$ref": "#/components/schemas/Market"
           },
-          "content": {
-            "type": "string"
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "total": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       }
@@ -136,7 +220,10 @@
   },
   "tags": [
     {
-      "name": "Post"
+      "name": "Fetch"
+    },
+    {
+      "name": "Receipt"
     }
   ]
 }

@@ -13,8 +13,8 @@ export const Route = createRootRoute({
 })
 
 const navItems = [
-    { to: '/', label: 'Home' },
-    { to: '/posts', label: 'Posts', exact: true },
+    { to: '/', label: 'Fetch' },
+    { to: '/receipts', label: 'Receipts', exact: true },
 ]
 
 function RootComponent() {

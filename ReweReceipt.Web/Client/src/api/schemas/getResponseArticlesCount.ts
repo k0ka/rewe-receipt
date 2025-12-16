@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PostApiV1PostParams = {
-  title?: string;
-  content?: string;
-};
+/**
+ * @pattern ^-?(?:0|[1-9]\d*)$
+ */
+export type GetResponseArticlesCount = number | string;

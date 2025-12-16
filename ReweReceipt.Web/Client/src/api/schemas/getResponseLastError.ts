@@ -5,8 +5,4 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface Post {
-  id: string;
-  title: string;
-  content: string;
-}
+export type GetResponseLastError = null | string;

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReweReceipt.Web;
 
@@ -10,9 +11,11 @@ using ReweReceipt.Web;
 namespace ReweReceipt.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251212172926_Receipt")]
+    partial class Receipt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -72,45 +75,6 @@ namespace ReweReceipt.Web.Migrations
                     b.ToTable("Receipts");
                 });
 
-            modelBuilder.Entity("ReweReceipt.Web.Entities.ReceiptArticle", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Nan")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("Quantity")
-                        .HasColumnType("REAL");
-
-                    b.Property<Guid>("ReceiptId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TotalPrice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UnitPrice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Weight")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiptId");
-
-                    b.ToTable("ReceiptArticle");
-                });
-
             modelBuilder.Entity("ReweReceipt.Web.Entities.Receipt", b =>
                 {
                     b.HasOne("ReweReceipt.Web.Entities.Market", "Market")
@@ -120,22 +84,6 @@ namespace ReweReceipt.Web.Migrations
                         .IsRequired();
 
                     b.Navigation("Market");
-                });
-
-            modelBuilder.Entity("ReweReceipt.Web.Entities.ReceiptArticle", b =>
-                {
-                    b.HasOne("ReweReceipt.Web.Entities.Receipt", "Receipt")
-                        .WithMany("Articles")
-                        .HasForeignKey("ReceiptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Receipt");
-                });
-
-            modelBuilder.Entity("ReweReceipt.Web.Entities.Receipt", b =>
-                {
-                    b.Navigation("Articles");
                 });
 #pragma warning restore 612, 618
         }

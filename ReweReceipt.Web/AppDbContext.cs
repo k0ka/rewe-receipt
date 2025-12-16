@@ -5,5 +5,7 @@ namespace ReweReceipt.Web;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Post> Posts { get; set; }
+    public DbSet<Market> Markets { get; set; }
+    public DbSet<Receipt> Receipts { get; set; }
+    public DbSet<ReceiptArticle> ReceiptArticle { get; set; }
 }

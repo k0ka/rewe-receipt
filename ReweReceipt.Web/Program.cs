@@ -25,26 +25,22 @@ builder.Services.AddControllersWithViews(options =>
 );
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DbContext"))
+    options
+        .UseLazyLoadingProxies()
+        .UseSqlite(builder.Configuration.GetConnectionString("DbContext"))
 );
 
 var app = builder.Build();
 
-// Run migrations automatically
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(options => options.WithJavaScriptConfiguration("/scalar/config.js"));
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+
+app.MapOpenApi();
+app.MapScalarApiReference(options => options.WithJavaScriptConfiguration("/scalar/config.js"));
 
 var antiForgery = app.Services.GetRequiredService<IAntiforgery>();
 app.Use(async (context, next) =>
