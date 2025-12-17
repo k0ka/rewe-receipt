@@ -1,6 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useGetApiV1ReceiptId} from "@/api/endpoints/receipt.ts";
-import {Item, ItemContent, ItemDescription, ItemTitle} from "@/components/ui/item.tsx";
+import {Item, ItemActions, ItemContent, ItemDescription, ItemTitle} from "@/components/ui/item.tsx";
+import {RouterButton} from "@/components/ui/router-button.tsx";
 
 export const Route = createFileRoute('/receipts/$receiptId')({
     component: Component,
@@ -23,12 +24,22 @@ function Component() {
                 {data.data.articles.map(article => (
                     <Item variant="outline" key={article.id}>
                         <ItemContent>
-                            <ItemTitle>{article.productName != '' ? article.productName : `Nan ${article.nan}`}</ItemTitle>
+                            <ItemTitle>{article.productName != '' ? article.productName : `Unknown product ${article.nan.toString()}`}</ItemTitle>
                             <ItemDescription>
                                 €{article.price} x {article.quantity} =
                                 €{Number(article.price) * Number(article.quantity)}
                             </ItemDescription>
                         </ItemContent>
+                        <ItemActions>
+                            <RouterButton
+                                to="/articles/$articleId"
+                                params={{'articleId': article.nan.toString()}}
+                                variant="outline"
+                                size="sm"
+                            >
+                                Open
+                            </RouterButton>
+                        </ItemActions>
                     </Item>
                 ))}
             </div>

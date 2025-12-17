@@ -5,6 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from "./article";
+export * from "./articleId";
 export * from "./getApiV1ReceiptParams";
 export * from "./getResponse";
 export * from "./getResponseArticlesCount";

@@ -9,13 +9,14 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
     public record ReceiptBrief(Guid Id, Market Market, DateTime Date, decimal Total);
 
     /// <summary>
-    /// Get a list of brief receipts
+    /// List brief receipts
     /// </summary>
     [HttpGet]
-    public IEnumerable<ReceiptBrief> Get(int offset = 0, int perPage = 50) =>
+    public IEnumerable<ReceiptBrief> List(int offset = 0, int perPage = 50) =>
         dbContext.Receipts
             .Skip(offset)
             .Take(perPage)
+            .OrderByDescending(receipt => receipt.TimeStamp)
             .Select(receipt => new ReceiptBrief(
                     receipt.Id,
                     receipt.Market,
@@ -40,7 +41,7 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
     /// <summary>
     /// Get full info about the receipt
     /// </summary>
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public ReceiptFull Get(Guid id)
     {
         var receipt = dbContext.Receipts.Include(receipt => receipt.Market).First(receipt => receipt.Id == id);

@@ -5,6 +5,47 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/Article/{id}": {
+      "get": {
+        "tags": [
+          "Article"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Fetch": {
       "get": {
         "tags": [
@@ -162,6 +203,37 @@
   },
   "components": {
     "schemas": {
+      "Article": {
+        "required": [
+          "id",
+          "productName",
+          "imageUrl",
+          "receipts"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "receipts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptArticle"
+            }
+          }
+        }
+      },
       "GetResponse": {
         "required": [
           "isFetching",
@@ -347,6 +419,9 @@
     }
   },
   "tags": [
+    {
+      "name": "Article"
+    },
     {
       "name": "Fetch"
     },
