@@ -14,7 +14,7 @@ export const Route = createRootRoute({
 
 const navItems = [
     { to: '/', label: 'Fetch' },
-    { to: '/receipts', label: 'Receipts', exact: true },
+    { to: '/receipts/', label: 'Receipts', exact: false },
 ]
 
 function RootComponent() {

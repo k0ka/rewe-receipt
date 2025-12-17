@@ -17,7 +17,11 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { GetApiV1ReceiptParams, ReceiptBrief } from "../schemas";
+import type {
+  GetApiV1ReceiptParams,
+  ReceiptBrief,
+  ReceiptFull,
+} from "../schemas";
 
 import { customFetch } from "../../custom-fetch";
 
@@ -193,6 +197,180 @@ export function useGetApiV1Receipt<
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
   const queryOptions = getGetApiV1ReceiptQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export type getApiV1ReceiptIdResponse200 = {
+  data: ReceiptFull;
+  status: 200;
+};
+
+export type getApiV1ReceiptIdResponseSuccess = getApiV1ReceiptIdResponse200 & {
+  headers: Headers;
+};
+export type getApiV1ReceiptIdResponse = getApiV1ReceiptIdResponseSuccess;
+
+export const getGetApiV1ReceiptIdUrl = (id: string) => {
+  return `/api/v1/Receipt/${id}`;
+};
+
+export const getApiV1ReceiptId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<getApiV1ReceiptIdResponse> => {
+  return customFetch<getApiV1ReceiptIdResponse>(getGetApiV1ReceiptIdUrl(id), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApiV1ReceiptIdQueryKey = (id?: string) => {
+  return [`/api/v1/Receipt/${id}`] as const;
+};
+
+export const getGetApiV1ReceiptIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiV1ReceiptIdQueryKey(id);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getApiV1ReceiptId>>
+  > = ({ signal }) => getApiV1ReceiptId(id, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiV1ReceiptIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiV1ReceiptId>>
+>;
+export type GetApiV1ReceiptIdQueryError = unknown;
+
+export function useGetApiV1ReceiptId<
+  TData = Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1ReceiptId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiV1ReceiptId<
+  TData = Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1ReceiptId>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiV1ReceiptId<
+  TData = Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiV1ReceiptId<
+  TData = Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1ReceiptId>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiV1ReceiptIdQueryOptions(id, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,

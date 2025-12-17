@@ -118,6 +118,46 @@
           }
         }
       }
+    },
+    "/api/v1/Receipt/{id}": {
+      "get": {
+        "tags": [
+          "Receipt"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptFull"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptFull"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiptFull"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -186,6 +226,49 @@
           }
         }
       },
+      "ReceiptArticle": {
+        "required": [
+          "id",
+          "nan",
+          "productName",
+          "quantity",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nan": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "float"
+          },
+          "price": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "ReceiptBrief": {
         "required": [
           "id",
@@ -213,6 +296,51 @@
               "string"
             ],
             "format": "double"
+          }
+        }
+      },
+      "ReceiptFull": {
+        "required": [
+          "id",
+          "market",
+          "date",
+          "total",
+          "paybackFlag",
+          "cancelled",
+          "articles"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "market": {
+            "$ref": "#/components/schemas/Market"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "total": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "paybackFlag": {
+            "type": "boolean"
+          },
+          "cancelled": {
+            "type": "boolean"
+          },
+          "articles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptArticle"
+            }
           }
         }
       }

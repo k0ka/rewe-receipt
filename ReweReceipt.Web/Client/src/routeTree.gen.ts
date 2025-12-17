@@ -9,65 +9,58 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ReceiptsRouteImport } from './routes/receipts'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ReceiptsReceiptIdRouteImport } from './routes/receipts_/$receiptId'
+import { Route as ReceiptsIndexRouteImport } from './routes/receipts/index'
+import { Route as ReceiptsReceiptIdRouteImport } from './routes/receipts/$receiptId'
 
-const ReceiptsRoute = ReceiptsRouteImport.update({
-  id: '/receipts',
-  path: '/receipts',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReceiptsIndexRoute = ReceiptsIndexRouteImport.update({
+  id: '/receipts/',
+  path: '/receipts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReceiptsReceiptIdRoute = ReceiptsReceiptIdRouteImport.update({
-  id: '/receipts_/$receiptId',
+  id: '/receipts/$receiptId',
   path: '/receipts/$receiptId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/receipts': typeof ReceiptsRoute
   '/receipts/$receiptId': typeof ReceiptsReceiptIdRoute
+  '/receipts': typeof ReceiptsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/receipts': typeof ReceiptsRoute
   '/receipts/$receiptId': typeof ReceiptsReceiptIdRoute
+  '/receipts': typeof ReceiptsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/receipts': typeof ReceiptsRoute
-  '/receipts_/$receiptId': typeof ReceiptsReceiptIdRoute
+  '/receipts/$receiptId': typeof ReceiptsReceiptIdRoute
+  '/receipts/': typeof ReceiptsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/receipts' | '/receipts/$receiptId'
+  fullPaths: '/' | '/receipts/$receiptId' | '/receipts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/receipts' | '/receipts/$receiptId'
-  id: '__root__' | '/' | '/receipts' | '/receipts_/$receiptId'
+  to: '/' | '/receipts/$receiptId' | '/receipts'
+  id: '__root__' | '/' | '/receipts/$receiptId' | '/receipts/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ReceiptsRoute: typeof ReceiptsRoute
   ReceiptsReceiptIdRoute: typeof ReceiptsReceiptIdRoute
+  ReceiptsIndexRoute: typeof ReceiptsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/receipts': {
-      id: '/receipts'
-      path: '/receipts'
-      fullPath: '/receipts'
-      preLoaderRoute: typeof ReceiptsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -75,8 +68,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/receipts_/$receiptId': {
-      id: '/receipts_/$receiptId'
+    '/receipts/': {
+      id: '/receipts/'
+      path: '/receipts'
+      fullPath: '/receipts'
+      preLoaderRoute: typeof ReceiptsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/receipts/$receiptId': {
+      id: '/receipts/$receiptId'
       path: '/receipts/$receiptId'
       fullPath: '/receipts/$receiptId'
       preLoaderRoute: typeof ReceiptsReceiptIdRouteImport
@@ -87,8 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ReceiptsRoute: ReceiptsRoute,
   ReceiptsReceiptIdRoute: ReceiptsReceiptIdRoute,
+  ReceiptsIndexRoute: ReceiptsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

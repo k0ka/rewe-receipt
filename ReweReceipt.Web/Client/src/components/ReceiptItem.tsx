@@ -1,6 +1,6 @@
 import {Item, ItemActions, ItemContent, ItemDescription, ItemTitle} from "@/components/ui/item.tsx";
 import type {ReceiptBrief} from "@/api/schemas";
-import {Button} from "@/components/ui/button.tsx";
+import {RouterButton} from "@/components/ui/router-button.tsx";
 
 interface Props {
     receipt: ReceiptBrief
@@ -15,9 +15,14 @@ export default function ReceiptItem({receipt}: Props) {
                 <ItemDescription>{receipt.market.street}</ItemDescription>
             </ItemContent>
             <ItemActions>
-                <Button variant="outline" size="sm">
+                <RouterButton
+                    to="/receipts/$receiptId"
+                    params={{'receiptId': receipt.id}}
+                    variant="outline"
+                    size="sm"
+                >
                     Open
-                </Button>
+                </RouterButton>
             </ItemActions>
         </Item>
     )
