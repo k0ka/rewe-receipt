@@ -5,12 +5,12 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { ArticleId } from "./articleId";
-import type { ReceiptArticle } from "./receiptArticle";
+import type { ArticleReceipt } from "./articleReceipt";
 
 export interface Article {
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   id: ArticleId;
   productName: string;
   imageUrl: string;
-  receipts: ReceiptArticle[];
+  receipts: ArticleReceipt[];
 }

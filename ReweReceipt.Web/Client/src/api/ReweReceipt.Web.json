@@ -229,8 +229,43 @@
           "receipts": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReceiptArticle"
+              "$ref": "#/components/schemas/ArticleReceipt"
             }
+          }
+        }
+      },
+      "ArticleReceipt": {
+        "required": [
+          "receiptId",
+          "timeStamp",
+          "quantity",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "receiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "timeStamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "float"
+          },
+          "price": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

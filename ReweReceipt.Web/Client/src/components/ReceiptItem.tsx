@@ -7,7 +7,6 @@ interface Props {
 }
 
 export default function ReceiptItem({receipt}: Props) {
-
     return (
         <Item variant="outline">
             <ItemContent>

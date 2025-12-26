@@ -5,9 +5,9 @@ namespace ReweReceipt.Web.Controllers;
 
 public class ArticleController(AppDbContext dbContext) : BaseApiController
 {
-    public record ReceiptArticle(Guid ReceiptId, DateTime TimeStamp, float Quantity, decimal Price);
+    public record ArticleReceipt(Guid ReceiptId, DateTime TimeStamp, float Quantity, decimal Price);
 
-    public record Article(int Id, string ProductName, string ImageUrl, IEnumerable<ReceiptArticle> Receipts);
+    public record Article(int Id, string ProductName, string ImageUrl, IEnumerable<ArticleReceipt> Receipts);
 
     /// <summary>
     /// Get full about the article
@@ -30,7 +30,7 @@ public class ArticleController(AppDbContext dbContext) : BaseApiController
                 id,
                 receiptArticles.First().ProductName,
                 receiptArticles.First().MediaUrl,
-                receiptArticles.Select(receipt => new ReceiptArticle(
+                receiptArticles.Select(receipt => new ArticleReceipt(
                         receipt.Receipt.Id,
                         receipt.Receipt.TimeStamp,
                         receipt.Quantity,

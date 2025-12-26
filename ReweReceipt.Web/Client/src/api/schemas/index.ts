@@ -7,6 +7,9 @@
 
 export * from "./article";
 export * from "./articleId";
+export * from "./articleReceipt";
+export * from "./articleReceiptPrice";
+export * from "./articleReceiptQuantity";
 export * from "./getApiV1ReceiptParams";
 export * from "./getResponse";
 export * from "./getResponseArticlesCount";

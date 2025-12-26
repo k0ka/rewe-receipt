@@ -1,5 +1,6 @@
 ﻿import {createFileRoute} from '@tanstack/react-router'
 import {useGetApiV1ArticleId} from "@/api/endpoints/article.ts";
+import ArticleCharts from "@/components/ArticleCharts.tsx";
 
 export const Route = createFileRoute('/articles/$articleId')({
     component: Component,
@@ -27,7 +28,10 @@ function Component() {
                     Brought {data.data.receipts.reduce((cur, next) => cur + Number(next.quantity), 0)} units
                 </div>
                 <div>
-                    Spent €{data.data.receipts.reduce((cur, next) => cur + Number(next.price) * Number(next.quantity), 0).toFixed(2)}
+                    Total spent €{data.data.receipts.reduce((cur, next) => cur + Number(next.price) * Number(next.quantity), 0).toFixed(2)}
+                </div>
+                <div>
+                    <ArticleCharts receipts={data.data.receipts} />
                 </div>
             </div>
         </div>
