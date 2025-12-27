@@ -16,14 +16,15 @@ function Component() {
     const {mutateAsync, isPending} = usePostApiV1Fetch();
     const [cookie, setCookie] = useState('');
     
+    const isFetching = data?.data.isFetching ?? false;
     useEffect(() => {
-        if (!data?.data.isFetching) {
+        if (!isFetching) {
             return;
         }
         
-        const timer = setTimeout(() => refetch(), 1000);
-        return () => clearTimeout(timer);
-    }, [data, refetch])
+        const interval = setInterval(() => refetch(), 1000);
+        return () => clearInterval(interval);
+    }, [isFetching, refetch])
     
     if (!isSuccess) {
         return <div>Loading...</div>;
@@ -36,7 +37,7 @@ function Component() {
         await refetch();
     }
     
-    const isLoading = isRefetching || isPending || data.data.isFetching;
+    const isLoading = isRefetching || isPending || isFetching;
     
     return (
         <div className="p-2">
@@ -54,10 +55,13 @@ function Component() {
                 </Alert>
             )}
             <div>
+                Fetched articles: {data.data.articlesCount}
+            </div>
+            <div>
                 Fetched receipts: {data.data.receiptsCount}
             </div>
             <div>
-                Fetched articles: {data.data.articlesCount}
+                Fetched receipt lines: {data.data.receiptLinesCount}
             </div>
             <div className="w-full max-w-md">
                 <FieldGroup>

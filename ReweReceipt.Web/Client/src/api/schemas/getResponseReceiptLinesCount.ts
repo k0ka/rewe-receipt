@@ -8,4 +8,4 @@
 /**
  * @pattern ^-?(?:0|[1-9]\d*)$
  */
-export type ReceiptArticleNan = number | string;
+export type GetResponseReceiptLinesCount = number | string;

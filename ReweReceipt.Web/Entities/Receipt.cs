@@ -15,5 +15,5 @@ public class Receipt
     public bool PaybackFlag { get; set; }
     public bool Cancelled { get; set; }
 
-    public virtual ICollection<ReceiptArticle> Articles { get; } = [];
+    public virtual ICollection<ReceiptLine> Lines { get; } = [];
 }

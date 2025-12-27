@@ -4,14 +4,14 @@
  * ReweReceipt.Web | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { ArticleReceiptQuantity } from "./articleReceiptQuantity";
-import type { ArticleReceiptPrice } from "./articleReceiptPrice";
+import type { ArticlePurchaseQuantity } from "./articlePurchaseQuantity";
+import type { ArticlePurchasePrice } from "./articlePurchasePrice";
 
-export interface ArticleReceipt {
+export interface ArticlePurchase {
   receiptId: string;
   timeStamp: string;
   /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$ */
-  quantity: ArticleReceiptQuantity;
+  quantity: ArticlePurchaseQuantity;
   /** @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$ */
-  price: ArticleReceiptPrice;
+  price: ArticlePurchasePrice;
 }

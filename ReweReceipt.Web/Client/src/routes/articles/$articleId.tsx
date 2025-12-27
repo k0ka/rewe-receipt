@@ -8,7 +8,7 @@ export const Route = createFileRoute('/articles/$articleId')({
 
 function Component() {
     const {articleId} = Route.useParams();
-    const {data, isSuccess} = useGetApiV1ArticleId(Number(articleId));
+    const {data, isSuccess} = useGetApiV1ArticleId(articleId);
 
     if (!isSuccess) {
         return <div>Loading...</div>;
@@ -25,13 +25,13 @@ function Component() {
                     </div>
                 )}
                 <div>
-                    Brought {data.data.receipts.reduce((cur, next) => cur + Number(next.quantity), 0)} units
+                    Brought {data.data.purchases.reduce((cur, next) => cur + Number(next.quantity), 0)} units
                 </div>
                 <div>
-                    Total spent €{data.data.receipts.reduce((cur, next) => cur + Number(next.price) * Number(next.quantity), 0).toFixed(2)}
+                    Total spent €{data.data.purchases.reduce((cur, next) => cur + Number(next.price) * Number(next.quantity), 0).toFixed(2)}
                 </div>
                 <div>
-                    <ArticleCharts receipts={data.data.receipts} />
+                    <ArticleCharts purchases={data.data.purchases} />
                 </div>
             </div>
         </div>

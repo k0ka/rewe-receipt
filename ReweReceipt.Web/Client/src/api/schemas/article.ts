@@ -4,13 +4,14 @@
  * ReweReceipt.Web | v1
  * OpenAPI spec version: 1.0.0
  */
-import type { ArticleId } from "./articleId";
-import type { ArticleReceipt } from "./articleReceipt";
+import type { ArticleNan } from "./articleNan";
+import type { ArticlePurchase } from "./articlePurchase";
 
 export interface Article {
+  guid: string;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
-  id: ArticleId;
+  nan: ArticleNan;
   productName: string;
   imageUrl: string;
-  receipts: ArticleReceipt[];
+  purchases: ArticlePurchase[];
 }

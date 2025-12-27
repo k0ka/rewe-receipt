@@ -6,6 +6,6 @@
  */
 
 /**
- * @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$
+ * @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
  */
-export type ReceiptArticleQuantity = number | string;
+export type ArticlePurchasePrice = number | string;

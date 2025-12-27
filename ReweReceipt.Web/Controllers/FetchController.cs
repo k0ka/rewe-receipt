@@ -5,13 +5,20 @@ namespace ReweReceipt.Web.Controllers;
 
 public class FetchController(FetchService fetchService, AppDbContext dbContext) : BaseApiController
 {
-    public record GetResponse(bool IsFetching, int ReceiptsCount, int ArticlesCount, string? lastError);
+    public record GetResponse(
+        bool IsFetching,
+        int ReceiptsCount,
+        int ArticlesCount,
+        int ReceiptLinesCount,
+        string? LastError
+    );
 
     [HttpGet]
     public GetResponse Get() => new(
         fetchService.IsFetching,
         dbContext.Receipts.Count(),
-        dbContext.ReceiptArticle.Count(),
+        dbContext.Articles.Count(),
+        dbContext.ReceiptLines.Count(),
         fetchService.LastError?.Message
     );
 

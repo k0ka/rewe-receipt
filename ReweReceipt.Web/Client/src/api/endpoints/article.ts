@@ -33,12 +33,12 @@ export type getApiV1ArticleIdResponseSuccess = getApiV1ArticleIdResponse200 & {
 };
 export type getApiV1ArticleIdResponse = getApiV1ArticleIdResponseSuccess;
 
-export const getGetApiV1ArticleIdUrl = (id: number) => {
+export const getGetApiV1ArticleIdUrl = (id: string) => {
   return `/api/v1/Article/${id}`;
 };
 
 export const getApiV1ArticleId = async (
-  id: number,
+  id: string,
   options?: RequestInit,
 ): Promise<getApiV1ArticleIdResponse> => {
   return customFetch<getApiV1ArticleIdResponse>(getGetApiV1ArticleIdUrl(id), {
@@ -47,7 +47,7 @@ export const getApiV1ArticleId = async (
   });
 };
 
-export const getGetApiV1ArticleIdQueryKey = (id?: number) => {
+export const getGetApiV1ArticleIdQueryKey = (id?: string) => {
   return [`/api/v1/Article/${id}`] as const;
 };
 
@@ -55,7 +55,7 @@ export const getGetApiV1ArticleIdQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiV1ArticleId>>,
   TError = unknown,
 >(
-  id: number,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -96,7 +96,7 @@ export function useGetApiV1ArticleId<
   TData = Awaited<ReturnType<typeof getApiV1ArticleId>>,
   TError = unknown,
 >(
-  id: number,
+  id: string,
   options: {
     query: Partial<
       UseQueryOptions<
@@ -123,7 +123,7 @@ export function useGetApiV1ArticleId<
   TData = Awaited<ReturnType<typeof getApiV1ArticleId>>,
   TError = unknown,
 >(
-  id: number,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -150,7 +150,7 @@ export function useGetApiV1ArticleId<
   TData = Awaited<ReturnType<typeof getApiV1ArticleId>>,
   TError = unknown,
 >(
-  id: number,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -170,7 +170,7 @@ export function useGetApiV1ArticleId<
   TData = Awaited<ReturnType<typeof getApiV1ArticleId>>,
   TError = unknown,
 >(
-  id: number,
+  id: string,
   options?: {
     query?: Partial<
       UseQueryOptions<

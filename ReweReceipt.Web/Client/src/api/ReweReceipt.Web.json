@@ -16,9 +16,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -205,14 +204,19 @@
     "schemas": {
       "Article": {
         "required": [
-          "id",
+          "guid",
+          "nan",
           "productName",
           "imageUrl",
-          "receipts"
+          "purchases"
         ],
         "type": "object",
         "properties": {
-          "id": {
+          "guid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nan": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -226,15 +230,15 @@
           "imageUrl": {
             "type": "string"
           },
-          "receipts": {
+          "purchases": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ArticleReceipt"
+              "$ref": "#/components/schemas/ArticlePurchase"
             }
           }
         }
       },
-      "ArticleReceipt": {
+      "ArticlePurchase": {
         "required": [
           "receiptId",
           "timeStamp",
@@ -274,6 +278,7 @@
           "isFetching",
           "receiptsCount",
           "articlesCount",
+          "receiptLinesCount",
           "lastError"
         ],
         "type": "object",
@@ -290,6 +295,14 @@
             "format": "int32"
           },
           "articlesCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "receiptLinesCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "integer",
@@ -333,49 +346,6 @@
           }
         }
       },
-      "ReceiptArticle": {
-        "required": [
-          "id",
-          "nan",
-          "productName",
-          "quantity",
-          "price"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "nan": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "productName": {
-            "type": "string"
-          },
-          "quantity": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "float"
-          },
-          "price": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
-          }
-        }
-      },
       "ReceiptBrief": {
         "required": [
           "id",
@@ -414,7 +384,7 @@
           "total",
           "paybackFlag",
           "cancelled",
-          "articles"
+          "lines"
         ],
         "type": "object",
         "properties": {
@@ -443,11 +413,45 @@
           "cancelled": {
             "type": "boolean"
           },
-          "articles": {
+          "lines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReceiptArticle"
+              "$ref": "#/components/schemas/ReceiptLine"
             }
+          }
+        }
+      },
+      "ReceiptLine": {
+        "required": [
+          "id",
+          "productName",
+          "quantity",
+          "price"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "float"
+          },
+          "price": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       }

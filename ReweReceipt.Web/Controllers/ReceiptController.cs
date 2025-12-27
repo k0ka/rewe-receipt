@@ -26,7 +26,7 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
             );
 
 
-    public record ReceiptArticle(Guid Id, int Nan, string ProductName, float Quantity, decimal Price);
+    public record ReceiptLine(Guid Id, string ProductName, float Quantity, decimal Price);
 
     public record ReceiptFull(
         Guid Id,
@@ -35,7 +35,7 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
         decimal Total,
         bool PaybackFlag,
         bool Cancelled,
-        IEnumerable<ReceiptArticle> Articles
+        IEnumerable<ReceiptLine> Lines
     );
 
     /// <summary>
@@ -52,12 +52,11 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
             receipt.TotalPrice / 100m,
             receipt.PaybackFlag,
             receipt.Cancelled,
-            receipt.Articles.Select(article => new ReceiptArticle(
-                    article.Id,
-                    article.Nan,
-                    article.ProductName,
-                    article.Quantity,
-                    article.UnitPrice / 100m
+            receipt.Lines.Select(line => new ReceiptLine(
+                    line.Article.Id,
+                    line.Article.ProductName != "" ? line.Article.ProductName : $"Unknown article {line.Article.Nan}",
+                    line.Quantity,
+                    line.UnitPrice / 100m
                 )
             )
         );

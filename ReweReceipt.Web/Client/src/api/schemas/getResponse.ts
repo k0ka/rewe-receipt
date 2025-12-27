@@ -6,6 +6,7 @@
  */
 import type { GetResponseReceiptsCount } from "./getResponseReceiptsCount";
 import type { GetResponseArticlesCount } from "./getResponseArticlesCount";
+import type { GetResponseReceiptLinesCount } from "./getResponseReceiptLinesCount";
 import type { GetResponseLastError } from "./getResponseLastError";
 
 export interface GetResponse {
@@ -14,5 +15,7 @@ export interface GetResponse {
   receiptsCount: GetResponseReceiptsCount;
   /** @pattern ^-?(?:0|[1-9]\d*)$ */
   articlesCount: GetResponseArticlesCount;
+  /** @pattern ^-?(?:0|[1-9]\d*)$ */
+  receiptLinesCount: GetResponseReceiptLinesCount;
   lastError: GetResponseLastError;
 }

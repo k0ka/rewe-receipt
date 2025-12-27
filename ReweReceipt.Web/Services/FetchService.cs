@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json.Nodes;
+using Microsoft.EntityFrameworkCore;
 using ReweReceipt.Web.Entities;
 
 namespace ReweReceipt.Web.Services;
@@ -57,12 +58,12 @@ public class FetchService
                 FetchReceiptsList().Wait();
                 foreach (var receipt in _dbContext.Receipts)
                 {
-                    if (receipt.Articles.Any())
+                    if (receipt.Lines.Any())
                     {
                         continue;
                     }
 
-                    FetchReceiptArticles(receipt).Wait();
+                    FetchReceiptLines(receipt).Wait();
                 }
             }
             catch (Exception ex)
@@ -78,44 +79,92 @@ public class FetchService
     /// <summary>
     /// Fetch articles for a receipt.
     /// </summary>
-    private async Task FetchReceiptArticles(Receipt receipt)
+    private async Task FetchReceiptLines(Receipt receipt)
     {
         JsonNode? root = await FetchUrl($"https://www.rewe.de/shop/api/receipts/{receipt.Id}");
 
-        if (root?["articles"] is not JsonArray articles)
+        if (root?["articles"] is not JsonArray lines)
         {
             _logger.LogError("Failed to load articles for receipt {id}: {root}", receipt.Id, root?.ToJsonString());
             throw new Exception("Failed to load articles");
         }
 
-        receipt.Articles.Clear();
+        receipt.Lines.Clear();
         _dbContext.Update(receipt);
         await _dbContext.SaveChangesAsync();
 
-        foreach (var article in articles)
+        foreach (var line in lines)
         {
+            if (line == null)
+            {
+                continue;
+            }
+            
+            var article = await GetArticle(line.AsObject());
             if (article == null)
             {
                 continue;
             }
 
-            receipt.Articles.Add(
-                new ReceiptArticle
+            receipt.Lines.Add(
+                new ReceiptLine
                 {
                     Receipt = receipt,
-                    Nan = article["nan"]?.GetValue<int>() ?? 0,
-                    ProductName = article["productName"]?.ToString() ?? string.Empty,
-                    Quantity = article["quantity"]?.GetValue<float>() ?? 0,
-                    UnitPrice = article["unitPrice"]?.GetValue<int>() ?? 0,
-                    TotalPrice = article["totalPrice"]?.GetValue<int>() ?? 0,
-                    Weight = article["weight"]?.GetValue<bool>() ?? false,
-                    MediaUrl = article["picture"]?["mediaUrl"]?.ToString() ?? string.Empty,
+                    Article = article,
+                    Quantity = line["quantity"]?.GetValue<float>() ?? 0,
+                    UnitPrice = line["unitPrice"]?.GetValue<int>() ?? 0,
+                    TotalPrice = line["totalPrice"]?.GetValue<int>() ?? 0,
+                    Weight = line["weight"]?.GetValue<bool>() ?? false,
                 }
             );
         }
 
         _dbContext.Update(receipt);
         await _dbContext.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Load an article from a database or create a new one.
+    /// </summary>
+    private async Task<Article?> GetArticle(JsonObject? data)
+    {
+        if (data == null)
+        {
+            return null;
+        }
+
+        var nan = data["nan"]?.GetValue<int>() ?? 0;
+        if (nan == 0)
+        {
+            _logger.LogError("Article nan is null: {data}", data.ToJsonString());
+            return null;
+        }
+
+        var article = await _dbContext.Articles.FirstOrDefaultAsync(article => article.Nan == nan);
+        if (article != null)
+        {
+            if (article.ProductName != data["productName"]?.ToString())
+            {
+                _logger.LogWarning(
+                    "Article has different name: {original} vs {new}",
+                    article.ProductName,
+                    data["productName"]?.ToString()
+                );
+            }
+
+            return article;
+        }
+
+        article = new Article()
+        {
+            Nan = nan,
+            ProductName = data["productName"]?.ToString() ?? string.Empty,
+            MediaUrl = data["picture"]?["mediaUrl"]?.ToString() ?? string.Empty,
+        };
+        _dbContext.Articles.Add(article);
+        await _dbContext.SaveChangesAsync();
+
+        return article;
     }
 
     /// <summary>

@@ -1,5 +1,4 @@
-﻿import type {ArticleReceipt} from "@/api/schemas";
-import {
+﻿import {
     BarElement,
     CategoryScale,
     Chart,
@@ -14,10 +13,11 @@ import {Bar, Scatter} from "react-chartjs-2";
 import 'chartjs-adapter-dayjs-4';
 import autoUnit from "@/lib/autoUnit.tsx";
 import groupValues from "@/lib/groupQuantity.tsx";
+import type {ArticlePurchase} from "@/api/schemas";
 
 
 interface Props {
-    receipts: ArticleReceipt[]
+    purchases: ArticlePurchase[]
 }
 
 Chart.register(
@@ -31,8 +31,8 @@ Chart.register(
     Tooltip,
 );
 
-export default function ArticleCharts({receipts}: Props) {
-    const unit = autoUnit(receipts.map(receipt => receipt.timeStamp));
+export default function ArticleCharts({purchases}: Props) {
+    const unit = autoUnit(purchases.map(receipt => receipt.timeStamp));
 
     return (
         <>
@@ -64,7 +64,7 @@ export default function ArticleCharts({receipts}: Props) {
                 data={{
                     datasets: [{
                         label: 'Price (€)',
-                        data: receipts.map(receipt => ({
+                        data: purchases.map(receipt => ({
                             x: receipt.timeStamp,
                             y: receipt.price
                         })),
@@ -103,7 +103,7 @@ export default function ArticleCharts({receipts}: Props) {
                         label: 'Units',
                         data: groupValues(
                             unit,
-                            receipts.map(receipt => ({
+                            purchases.map(receipt => ({
                                 timeStamp: receipt.timeStamp,
                                 value: Number(receipt.quantity)
                             }))
@@ -142,7 +142,7 @@ export default function ArticleCharts({receipts}: Props) {
                         label: 'Spent (€)',
                         data: groupValues(
                             unit,
-                            receipts.map(receipt => ({
+                            purchases.map(receipt => ({
                                 timeStamp: receipt.timeStamp,
                                 value: Number(receipt.price)*Number(receipt.quantity)
                             }))

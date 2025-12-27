@@ -8,4 +8,4 @@
 /**
  * @pattern ^-?(?:0|[1-9]\d*)(?:\.\d+)?$
  */
-export type ArticleReceiptPrice = number | string;
+export type ReceiptLinePrice = number | string;

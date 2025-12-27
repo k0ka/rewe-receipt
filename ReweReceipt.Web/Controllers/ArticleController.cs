@@ -5,22 +5,19 @@ namespace ReweReceipt.Web.Controllers;
 
 public class ArticleController(AppDbContext dbContext) : BaseApiController
 {
-    public record ArticleReceipt(Guid ReceiptId, DateTime TimeStamp, float Quantity, decimal Price);
+    public record ArticlePurchase(Guid ReceiptId, DateTime TimeStamp, float Quantity, decimal Price);
 
-    public record Article(int Id, string ProductName, string ImageUrl, IEnumerable<ArticleReceipt> Receipts);
+    public record Article(Guid Guid, int Nan, string ProductName, string ImageUrl, IEnumerable<ArticlePurchase> Purchases);
 
     /// <summary>
     /// Get full about the article
     /// </summary>
-    [HttpGet("{id:int}")]
-    public ActionResult<Article> Get(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<Article>> Get(Guid id)
     {
-        var receiptArticles = dbContext.ReceiptArticle
-            .Where(article => article.Nan == id)
-            .Include(receiptArticle => receiptArticle.Receipt)
-            .ToList();
+        var article = await dbContext.Articles.FindAsync(id);
         
-        if (receiptArticles.Count == 0)
+        if (article == null)
         {
             return NotFound();
         }
@@ -28,13 +25,14 @@ public class ArticleController(AppDbContext dbContext) : BaseApiController
         return Ok(
             new Article(
                 id,
-                receiptArticles.First().ProductName,
-                receiptArticles.First().MediaUrl,
-                receiptArticles.Select(receipt => new ArticleReceipt(
-                        receipt.Receipt.Id,
-                        receipt.Receipt.TimeStamp,
-                        receipt.Quantity,
-                        receipt.UnitPrice / 100m
+                article.Nan,
+                article.ProductName,
+                article.MediaUrl,
+                article.Lines.Select(line => new ArticlePurchase(
+                        line.Receipt.Id,
+                        line.Receipt.TimeStamp,
+                        line.Quantity,
+                        line.UnitPrice / 100m
                     )
                 )
             )

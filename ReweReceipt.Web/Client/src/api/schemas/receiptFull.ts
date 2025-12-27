@@ -6,7 +6,7 @@
  */
 import type { Market } from "./market";
 import type { ReceiptFullTotal } from "./receiptFullTotal";
-import type { ReceiptArticle } from "./receiptArticle";
+import type { ReceiptLine } from "./receiptLine";
 
 export interface ReceiptFull {
   id: string;
@@ -16,5 +16,5 @@ export interface ReceiptFull {
   total: ReceiptFullTotal;
   paybackFlag: boolean;
   cancelled: boolean;
-  articles: ReceiptArticle[];
+  lines: ReceiptLine[];
 }
