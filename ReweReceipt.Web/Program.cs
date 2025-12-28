@@ -38,6 +38,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+else
+{
+    var db = app.Services.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.MapOpenApi();
 app.MapScalarApiReference(options => options.WithJavaScriptConfiguration("/scalar/config.js"));
