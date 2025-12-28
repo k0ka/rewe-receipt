@@ -17,4 +17,6 @@ public class Article
     
     public virtual ICollection<ReceiptLine> Lines { get; } = [];
     public virtual ICollection<Tag> Tags { get; } = [];
+    
+    public string HumanReadableName => ProductName != "" ? ProductName : $"Unknown product {Nan})";
 }

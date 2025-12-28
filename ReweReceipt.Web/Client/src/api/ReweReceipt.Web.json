@@ -5,6 +5,79 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/v1/Article": {
+      "get": {
+        "tags": [
+          "Article"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleBrief"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleBrief"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleBrief"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/Article/{id}": {
       "get": {
         "tags": [
@@ -205,7 +278,6 @@
       "Article": {
         "required": [
           "guid",
-          "nan",
           "productName",
           "imageUrl",
           "purchases"
@@ -215,14 +287,6 @@
           "guid": {
             "type": "string",
             "format": "uuid"
-          },
-          "nan": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
           },
           "productName": {
             "type": "string"
@@ -235,6 +299,26 @@
             "items": {
               "$ref": "#/components/schemas/ArticlePurchase"
             }
+          }
+        }
+      },
+      "ArticleBrief": {
+        "required": [
+          "id",
+          "productName",
+          "imageUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
           }
         }
       },

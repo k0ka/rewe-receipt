@@ -54,7 +54,7 @@ public class ReceiptController(AppDbContext dbContext) : BaseApiController
             receipt.Cancelled,
             receipt.Lines.Select(line => new ReceiptLine(
                     line.Article.Id,
-                    line.Article.ProductName != "" ? line.Article.ProductName : $"Unknown article {line.Article.Nan}",
+                    line.Article.HumanReadableName,
                     line.Quantity,
                     line.UnitPrice / 100m
                 )

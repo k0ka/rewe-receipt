@@ -13,7 +13,6 @@
     const MONTH = DAY * 30;
     const YEAR = DAY * 365;
 
-    // These thresholds mimic Chart.js "best fit" logic
     if (range > 5 * YEAR) return 'year';
     if (range > 5 * MONTH) return 'month';
     if (range > 7 * DAY) return 'week';

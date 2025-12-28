@@ -17,11 +17,192 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { Article } from "../schemas";
+import type { Article, ArticleBrief, GetApiV1ArticleParams } from "../schemas";
 
 import { customFetch } from "../../custom-fetch";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+export type getApiV1ArticleResponse200 = {
+  data: ArticleBrief[];
+  status: 200;
+};
+
+export type getApiV1ArticleResponseSuccess = getApiV1ArticleResponse200 & {
+  headers: Headers;
+};
+export type getApiV1ArticleResponse = getApiV1ArticleResponseSuccess;
+
+export const getGetApiV1ArticleUrl = (params?: GetApiV1ArticleParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? "null" : value.toString());
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `/api/v1/Article?${stringifiedParams}`
+    : `/api/v1/Article`;
+};
+
+export const getApiV1Article = async (
+  params?: GetApiV1ArticleParams,
+  options?: RequestInit,
+): Promise<getApiV1ArticleResponse> => {
+  return customFetch<getApiV1ArticleResponse>(getGetApiV1ArticleUrl(params), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetApiV1ArticleQueryKey = (params?: GetApiV1ArticleParams) => {
+  return [`/api/v1/Article`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetApiV1ArticleQueryOptions = <
+  TData = Awaited<ReturnType<typeof getApiV1Article>>,
+  TError = unknown,
+>(
+  params?: GetApiV1ArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1Article>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetApiV1ArticleQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV1Article>>> = ({
+    signal,
+  }) => getApiV1Article(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiV1Article>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiV1ArticleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getApiV1Article>>
+>;
+export type GetApiV1ArticleQueryError = unknown;
+
+export function useGetApiV1Article<
+  TData = Awaited<ReturnType<typeof getApiV1Article>>,
+  TError = unknown,
+>(
+  params: undefined | GetApiV1ArticleParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1Article>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1Article>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1Article>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiV1Article<
+  TData = Awaited<ReturnType<typeof getApiV1Article>>,
+  TError = unknown,
+>(
+  params?: GetApiV1ArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1Article>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV1Article>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV1Article>>
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetApiV1Article<
+  TData = Awaited<ReturnType<typeof getApiV1Article>>,
+  TError = unknown,
+>(
+  params?: GetApiV1ArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1Article>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useGetApiV1Article<
+  TData = Awaited<ReturnType<typeof getApiV1Article>>,
+  TError = unknown,
+>(
+  params?: GetApiV1ArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getApiV1Article>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetApiV1ArticleQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 export type getApiV1ArticleIdResponse200 = {
   data: Article;

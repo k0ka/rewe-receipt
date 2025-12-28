@@ -1,13 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ReweReceipt.Web.Controllers;
 
 public class ArticleController(AppDbContext dbContext) : BaseApiController
 {
+    public record ArticleBrief(Guid Id, string ProductName, string ImageUrl);
+
+    /// <summary>
+    /// List brief articles
+    /// </summary>
+    [HttpGet]
+    public IEnumerable<ArticleBrief> List(int offset = 0, int perPage = 50, string? query = null) =>
+        dbContext.Articles
+            .Where(article => query == null || query != "" || article.ProductName.Contains(query))
+            .Skip(offset)
+            .Take(perPage)
+            .OrderByDescending(article => article.Nan)
+            .Select(article => new ArticleBrief(
+                    article.Id,
+                    article.HumanReadableName,
+                    article.MediaUrl
+                )
+            );
+
+
     public record ArticlePurchase(Guid ReceiptId, DateTime TimeStamp, float Quantity, decimal Price);
 
-    public record Article(Guid Guid, int Nan, string ProductName, string ImageUrl, IEnumerable<ArticlePurchase> Purchases);
+    public record Article(Guid Guid, string ProductName, string ImageUrl, IEnumerable<ArticlePurchase> Purchases);
 
     /// <summary>
     /// Get full about the article
@@ -16,7 +35,7 @@ public class ArticleController(AppDbContext dbContext) : BaseApiController
     public async Task<ActionResult<Article>> Get(Guid id)
     {
         var article = await dbContext.Articles.FindAsync(id);
-        
+
         if (article == null)
         {
             return NotFound();
@@ -25,8 +44,7 @@ public class ArticleController(AppDbContext dbContext) : BaseApiController
         return Ok(
             new Article(
                 id,
-                article.Nan,
-                article.ProductName,
+                article.HumanReadableName,
                 article.MediaUrl,
                 article.Lines.Select(line => new ArticlePurchase(
                         line.Receipt.Id,

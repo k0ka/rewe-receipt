@@ -6,10 +6,11 @@
  */
 
 export * from "./article";
-export * from "./articleNan";
+export * from "./articleBrief";
 export * from "./articlePurchase";
 export * from "./articlePurchasePrice";
 export * from "./articlePurchaseQuantity";
+export * from "./getApiV1ArticleParams";
 export * from "./getApiV1ReceiptParams";
 export * from "./getResponse";
 export * from "./getResponseArticlesCount";

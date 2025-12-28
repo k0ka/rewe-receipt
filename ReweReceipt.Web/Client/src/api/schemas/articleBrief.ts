@@ -5,7 +5,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-/**
- * @pattern ^-?(?:0|[1-9]\d*)$
- */
-export type ArticleNan = number | string;
+export interface ArticleBrief {
+  id: string;
+  productName: string;
+  imageUrl: string;
+}

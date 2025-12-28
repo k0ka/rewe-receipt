@@ -66,7 +66,7 @@ function Component() {
             <div className="w-full max-w-md">
                 <FieldGroup>
                     <Field>
-                        <FieldLabel htmlFor="post-title">
+                        <FieldLabel htmlFor="fetch-cookie">
                             RSTP Cookie
                         </FieldLabel>
                         <Textarea
